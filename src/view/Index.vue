@@ -23,10 +23,10 @@
         </div>
         <nav class="header--nav">
             <ul>
-                <li><a href="#">
+                <li><a @click="changeComponent('CuadradosMedios')">
                     Cuadrados Medios
                 </a></li>
-                <li><a href="#">
+                <li><a @click="changeComponent('ProductosMedios')">
                     Productos Medios
                 </a></li>
                 <li><a href="#">
@@ -39,7 +39,7 @@
         </nav>
     </div>
     <div class="third--section">
-        <component :is="selected"></component>
+        <component :is="method"></component>
     </div>
 
 </div>
@@ -47,14 +47,26 @@
 <script>
 //Componentes de los algoritmos
 import CuadradosMedios from '../components/CuadradosMedios.vue'
+import ProductosMedios from '../components/ProductosMedios.vue';
 
 export default {
     components: {
-        CuadradosMedios
+        CuadradosMedios,
+        ProductosMedios
     },
     data() {
         return {
             selected: 'CuadradosMedios',
+        }
+    },
+    computed: {
+        method() {
+            return this.selected
+        }
+    },
+    methods: {
+        changeComponent(component) {
+            this.selected = component
         }
     }
 
