@@ -12,7 +12,6 @@
                     </h1>
                 </div>
                 <div class="header--aboutUs">
-                    <font-awesome-icon :icon="['fas', 'circle-question']" size="2x" style="color: #ccfbf5;" />
                 </div>
             </div>
         </div>
@@ -29,10 +28,10 @@
                 <li><a @click="changeComponent('ProductosMedios')">
                     Productos Medios
                 </a></li>
-                <li><a href="#">
+                <li><a @click="changeComponent('CongruencialLineal')">
                     Congruencial Lineal
                 </a></li>
-                <li><a href="#">
+                <li><a @click="changeComponent('CongruencialMultiplicativo')">
                     Congruencial Multiplicativo
                 </a></li>
             </ul>
@@ -47,12 +46,15 @@
 <script>
 //Componentes de los algoritmos
 import CuadradosMedios from '../components/CuadradosMedios.vue'
-import ProductosMedios from '../components/ProductosMedios.vue';
-
+import ProductosMedios from '../components/ProductosMedios.vue'
+import CongruencialLineal from '../components/CongruencialLineal.vue'
+import CongruencialMultiplicativo from '../components/CongruencialMultiplicativo.vue'
 export default {
     components: {
         CuadradosMedios,
-        ProductosMedios
+        ProductosMedios,
+        CongruencialLineal,
+        CongruencialMultiplicativo
     },
     data() {
         return {
@@ -69,9 +71,6 @@ export default {
             this.selected = component
         }
     }
-
-
-    
 }
 </script>
 <style scoped>

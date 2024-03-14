@@ -4,13 +4,14 @@
         <div class="main--section--content">
             <div class="main--section--content--form">
                     <div class="form--group">
-                        <label>Dígitos (D)</label>
-                        <input v-model="digitos">
+                        <label>Semilla (X<sub>0</sub>)</label>
+                        <input v-model="semilla" type="number" min="0">
                     </div>
                     <div class="form--group">
-                        <label>Semilla (X<sub>0</sub>)</label>
-                        <input v-model="semilla">
+                        <label>Dígitos (D)</label>
+                        <input v-model="digitosLength" type="number" min="0" disabled>
                     </div>
+                    
                     <div class="form--group">
                         <label> Iteraciones </label>
                         <input v-model="iteraciones">
@@ -20,6 +21,12 @@
                         <button @click="limpiar">Limpiar</button>
                         <button  @click="generar">Generar</button>
                     </div>
+            </div>
+            <div class="isDegenerate" v-if="degenerate">
+                <h2>El periodo es degenerado</h2>
+                <p>
+                    {{ degenerateInfo }}
+                </p>
             </div>
             <div class="main--section--content--table">
                 <table>
@@ -51,19 +58,31 @@ export default {
             digitos: 0,
             semilla: 0,
             iteraciones: 0,
-            table: []
+            table: [],
+            numeros: [],
+            degenerateInfo: '',
+            degenerate: false,
         }
     },
     methods: {
         generar() {
+            this.degenerate = false
+            this.numeros = []
             this.table = []
-            this.digitos = parseInt(this.digitos)
+            this.digitos = parseInt(this.semilla.toString().length)
             if(this.digitos > 2 && this.semilla > 0 && this.iteraciones > 0 && this.digitos === this.semilla.toString().length) {
                 let semilla = this.semilla
                 for(let i = 0; i < this.iteraciones; i++) {
                     let yi = Math.pow(semilla, 2)
                     let Xi = this.hallarXi(yi)
                     let ri = '0.' + Xi
+                    if(this.numeros.includes(Xi) && this.degenerate === false) {
+                        this.degenerate = true
+                        this.degenerateInfo = `El periodo se degenera 
+                        en la iteración ${i + 1} con el número ${ri}, este número ya se encuentra en la lista 
+                        de números pseudoaleatorios generados en la iteración ${this.numeros.indexOf(Xi) + 1} con el número ${ri}`
+                    }
+                    this.numeros.push(Xi)
                     this.table.push({
                         iteracion: i + 1,
                         yi: yi,
@@ -84,7 +103,6 @@ export default {
             return xi
         },
         limpiar() {
-            this.digitos = 4
             this.semilla = 0
             this.iteraciones = 0
             this.table = []
@@ -93,6 +111,12 @@ export default {
     computed: {
         getTable() {
             return this.table
+        },
+        isdegenerate(){
+            return this.degenerate
+        },
+        digitosLength() {
+            return this.semilla.toString().length
         }
     },
 
@@ -151,6 +175,17 @@ export default {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
 
+}
+.isDegenerate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #ccfbf5;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
 }
 .main--section--content--form .form--group input {
     width: 50%;

@@ -22,15 +22,19 @@
                         <input v-model="isEqualDigitos" type="number" min="0" disabled> 
                     </input>
                     </div>
-                    
                     <div class="form--group">
                         <button @click="limpiar">Limpiar</button>
                         <button  @click="generar">Generar</button>
                     </div>
             </div>
+            <div class="isDegenerate" v-if="degenerate">
+                <h2>El periodo es degenerado</h2>
+                <p>
+                    {{ degenerateInfo }}
+                </p>
+            </div>
             <div class="main--section--content--table">
                 <table>
-                    
                     <thead>
                         <tr>
                             <th>Iteración (i)</th>
@@ -60,12 +64,18 @@ export default {
             semilla1: 0,
             iteraciones: 0,
             table: [],
-            digitos: 0
+            digitos: 0,
+            numeros: [],
+            degenerateInfo: '',
+            degenerate: false,
         }
     },
     methods: {
         generar() {
             this.table = []
+            this.numeros = []
+            this.degenerate = false
+            
             let digitosA = parseInt(this.semilla0.toString().length)
             let digitosB = parseInt(this.semilla1.toString().length)
             if( digitosA === digitosB) {
@@ -76,6 +86,13 @@ export default {
                     let yi = semilla0 * semilla1
                     let Xi = this.hallarXi(yi)
                     let ri = '0.' + Xi
+                    if(this.numeros.includes(Xi) && this.degenerate === false) {
+                        this.degenerate = true
+                        this.degenerateInfo = `El periodo se degenera 
+                        en la iteración ${i + 1} con el número ${ri}, este número ya se encuentra en la lista 
+                        de números pseudoaleatorios generados en la iteración ${this.numeros.indexOf(Xi) + 1} con el número ${ri}`
+                    }
+                    this.numeros.push(Xi)
                     this.table.push({
                         iteracion: i + 1,
                         yi: yi,
@@ -116,9 +133,10 @@ export default {
             } else {
                 return 0
             }
-        }
-        
-
+        },
+        isdegenerate(){
+            return this.degenerate
+        },
     },
 
 
