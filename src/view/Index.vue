@@ -1,46 +1,84 @@
 <template>
 <div class="main--container">
-    <header>
-        <div class="main--container--header">
-            <div class="first--section">
-                <div class="header--logo">
-                    <img src="../assets/foto.png" alt="ola" />
+    <div class="sticky-header">
+        <div class="app-header">
+            <header class="main--container--header">
+                <div class="header-content">
+                    <div class="header-start">
+                        <button class="header-button" @click="changeSidebar">
+                            <font-awesome-icon :icon="['fas', 'bars']" class="sidebarIcon"/>
+                        </button>
+                        <div class="header-title">
+                            <h1>SIS-224</h1>
+                        </div>
+                        <hr class="header-lineVertical" />
+                        <div class="header-description">
+                            <h2>Práctica 2</h2>
+                        </div>
+                    </div>
+                    <div class="header-end">
+                        <button class="header-button" @click="openModal">
+                            <font-awesome-icon :icon="['fas', 'circle-question']" class="aboutUsIcon"/>
+                        </button>
+                    </div>
                 </div>
-                <div class="header--title">
-                    <h1>
-                        Práctica 2
-                    </h1>
-                </div>
-                <div class="header--aboutUs">
-                </div>
+            </header>
+        </div>
+        <div class="overlay" v-show="showSidebar" @click="closeSidebar"></div>
+        <div class="header-sidebar-menu" v-show="showSidebar">
+            <div class="sidebar-menu-content">
+                
+                <nav class="sidebar-menu">
+                    <h1><strong>Seleccione un algoritmo: </strong></h1>
+                    <ul>
+                        <li>
+                            <button @click="changeComponent('CuadradosMedios')">
+                                Cuadrados Medios
+                            </button>
+                        </li>
+                        <li>
+                            <button @click="changeComponent('ProductosMedios')">
+                                Productos Medios
+                            </button>
+                        </li>
+                        <li>
+                            <button @click="changeComponent('CongruencialLineal')">
+                                Congruencial Lineal
+                            </button>
+                        </li>
+                        <li>
+                            <button @click="changeComponent('CongruencialMultiplicativo')">
+                                Congruencial Multiplicativo
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
-    </header>
-    <div class="second--section">
-        <div class="header--sub-tittle">
-            <h1>Algoritmos generadores de Números Pseudoaleatorios</h1>
+    </div>
+    <div class="main--section">
+        <component :is="method" />
+    </div>
+    <div>
+        <div class="modal" v-show="showModal">
+            <div class="modal-content">
+                <h2>¡Bienvenido!</h2>
+                <p>
+                    Página web para la generación de números pseudoaleatorios utilizando diferentes algoritmos. <br> <br>
+                    <strong>Cómo utilizar la página:</strong> <br>
+                    <strong>1.-</strong> Selecciona el algoritmo que deseas utilizar en el menú lateral. <br>
+                    <strong>2.-</strong> Ingresa los datos necesarios para el algoritmo. <br>
+                    <strong>3.-</strong> Da click en el botón "Generar". <br>
+                    <strong>4.-</strong> Observa los resultados en la tabla. <br>
+                    <br>
+                    <br>
+                    <strong>Nota:</strong> <br>
+                    Página desarrollada por Edward Gómez para la materia de Modelado, Dinámica de Sistemas y Simulación.
+                </p>
+                <button class="modal-close" @click="closeModal">Cerrar</button>
+            </div>
         </div>
-        <nav class="header--nav">
-            <ul>
-                <li><a @click="changeComponent('CuadradosMedios')">
-                    Cuadrados Medios
-                </a></li>
-                <li><a @click="changeComponent('ProductosMedios')">
-                    Productos Medios
-                </a></li>
-                <li><a @click="changeComponent('CongruencialLineal')">
-                    Congruencial Lineal
-                </a></li>
-                <li><a @click="changeComponent('CongruencialMultiplicativo')">
-                    Congruencial Multiplicativo
-                </a></li>
-            </ul>
-        </nav>
     </div>
-    <div class="third--section">
-        <component :is="method"></component>
-    </div>
-
 </div>
 </template>
 <script>
@@ -59,112 +97,273 @@ export default {
     data() {
         return {
             selected: 'CuadradosMedios',
+            showSidebar: false,
+            showModal: false
         }
     },
     computed: {
         method() {
             return this.selected
-        }
+        },
     },
     methods: {
         changeComponent(component) {
             this.selected = component
+            this.showSidebar = false
+        },
+        changeSidebar() {
+            this.showSidebar = !this.showSidebar
+        },
+        closeSidebar() {
+            this.showSidebar = false
+        },
+        openModal() {
+            this.showModal = true
+        },
+        closeModal() {
+            this.showModal = false
         }
     }
 }
 </script>
 <style scoped>
 .main--container {
-    display: flex;
-    flex-direction: column;
+    height: 100%;
     width: 100%;
-    height: 100vh;
-
+    background-color: #FFF;
+    margin: 0;
+    padding: 0;
+    color: var(--color-text);
+}
+.sticky-header{
+    position: sticky;
+    top: 0;
+}
+.app-header{
+    position: relative;
+    display: block;
+    z-index: 100;
+    background-color: #FFF;
 }
 .main--container--header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background-color: #0E7677;
-    flex-direction: column;
-    width: 100%;
-    color: #ccfbf5;
-    border-bottom: 1px solid #ccfbf5;
-    border-radius:  0.5rem;
+    border-block-end: 1px solid var(--color-line);
 }
-.first--section {
+.header-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem ;
+    flex-direction: row;
     width: 100%;
+    height: 100%;
 }
-.header--logo img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-.header--title h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-.header--aboutUs img {
-    width: 50px;
-    height: 50px;
-    color:  #ccfbf5;
-}
-.second--section {
+.header-start{
+    flex: 1;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-direction: column;
-    width: 100%;
-    background-color: #12bab6;
-    color: #fff;
-    border: #0E7677;
-    border-radius:  0.5rem;
-    flex-wrap: wrap;
-    padding: 1rem;
-    margin-top: 1rem;
-
+    justify-content: flex-start;
+    flex-direction: row;
 }
-.header--sub-tittle h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-
-}
-.header--nav ul {
-    display: flex;
-    list-style: none;
-    width: 100%;
-    flex-wrap: wrap;
-    padding: 0;
-    margin: 0;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-
-}
-.header--nav ul li {
-    margin: 0.5rem;
+.header-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
     padding: 0.5rem;
-    border-radius: 5px;
-    background-color: #0E7677;
-    color: #ccfbf5;
-    font-weight: 600;
+}
+.header-button :deep(svg) {
+    color: var(--color-text);
+    font-size: 1.5rem;
+}
+
+.header-button:hover :deep(svg) {
+    color: var(--color-hover);
+}
+.sidebarIcon{
+    width: 50px;
+    height: 50px;
+}
+.aboutUsIcon{
+    width: 50px;
+    height: 50px;
+}
+
+.header-description {
+    margin-left: 1rem;
+}
+.header-end{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.header-lineVertical {
+    height: 2rem;
+    margin: 0 1rem;
+    border-left: 1px solid var(--color-line)
+}
+.overlay {
+  display: block;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.header-sidebar-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 350px;
+    height: 100%;
+    background-color: #FFF;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--color-line);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: 0.3s;
+
+}
+.sidebar-menu-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.sidebar-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.sidebar-menu h1 {
+    margin-bottom: 2rem;
+    margin: 2rem 1rem ;
+    font-size: 1.5rem;
+    text-align: center;
+}
+.sidebar-menu ul {
+    list-style: none;
+    padding: 0 1rem;
+    margin: 0;
+}
+.sidebar-menu ul li {
+    margin: 1rem 0;
+}
+.sidebar-menu ul li button {
+    background-color: #f2f3f6;
+    border-radius: 0.5rem;
+    border: none;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.5rem;
+    color: var(--color-text);
     transition: 0.3s;
 }
-.header--nav ul li a {
-    text-decoration: none;
-    color: #042c2f;
-    font-weight: 600;
-    border-radius: 5px;
+.sidebar-menu ul li button:hover {
+    background-color: #EEF2FD;
+    color: var(--color-hover);
 }
-.header--nav ul li a:hover {
-    background-color: #0E7677;
-    color: #ccfbf5;
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
 }
+
+.modal-content {
+    background-color: #FFF;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal h2 {
+    margin-bottom: 1rem;
+}
+
+.modal p {
+    margin-bottom: 2rem;
+}
+
+.modal-close {
+    background-color: #f2f3f6;
+    border-radius: 0.5rem;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background-color: #EEF2FD;
+}
+
+/* Estilos para dispositivos pequeños (teléfonos) */
+@media only screen and (max-width: 600px) {
+  /* Estilos específicos para dispositivos pequeños */
+    .header-title h1 {
+        font-size: 1rem;
+    }
+    .header-description h2 {
+        font-size: 0.8rem;
+    }
+    .sidebar-menu ul li button {
+        font-size: 1rem;
+    }
+    .header-button :deep(svg) {
+        font-size: 1rem;
+    }
+    .header-lineVertical {
+        height: 1rem;
+        margin: 0 0.5rem;
+    }
+    .header-end{
+        flex: 1;
+    }
+    .header-start{
+        flex: 3;
+    }
+    .sidebarIcon{
+        width: 30px;
+        height: 30px;
+    }
+    .sidebar-menu h1 {
+        margin: 1rem 0.5rem ;
+        font-size: 1rem;
+    }
+    
+}
+
+/* Estilos para tabletas */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  /* Estilos específicos para tabletas */
+}
+
+/* Estilos para dispositivos medianos */
+@media only screen and (min-width: 1025px) and (max-width: 1440px) {
+  /* Estilos específicos para dispositivos medianos */
+}
+
+/* Estilos para dispositivos grandes (pantallas de escritorio) */
+@media only screen and (min-width: 1441px) {
+  /* Estilos específicos para dispositivos grandes */
+}
+
 </style>

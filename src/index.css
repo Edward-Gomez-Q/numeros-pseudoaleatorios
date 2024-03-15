@@ -3,3 +3,16 @@
     font-family: 'Roboto', sans-serif;
     
 }
+:root{
+    --color-text: #0F2145;
+    --color-line: #E1E5EA;
+    --color-hover: #3E31FA;
+}
+body{
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-text);
+    background-color: #F5F7FA;
+}
