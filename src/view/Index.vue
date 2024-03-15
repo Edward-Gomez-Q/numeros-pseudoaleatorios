@@ -6,7 +6,7 @@
                 <div class="header-content">
                     <div class="header-start">
                         <button class="header-button" @click="changeSidebar">
-                            <font-awesome-icon :icon="['fas', 'bars']" class="sidebarIcon"/>
+                            <img src="../assets/Menu.png" alt="Menu" class="sidebarIcon"/>
                         </button>
                         <div class="header-title">
                             <h1>SIS-224</h1>
@@ -18,7 +18,7 @@
                     </div>
                     <div class="header-end">
                         <button class="header-button" @click="openModal">
-                            <font-awesome-icon :icon="['fas', 'circle-question']" class="aboutUsIcon"/>
+                            <img src="../assets/AboutUs.png" alt="About Us" class="aboutUsIcon"/>
                         </button>
                     </div>
                 </div>
@@ -58,20 +58,15 @@
     </div>
     <component :is="method" />
     <div>
-        <div class="modal" v-show="showModal">
+        <div class="modal" v-show="showModal" @click="closeModal">
             <div class="modal-content">
                 <h2>¡Bienvenido!</h2>
                 <p>
-                    Página web para la generación de números pseudoaleatorios utilizando diferentes algoritmos. <br> <br>
                     <strong>Cómo utilizar la página:</strong> <br>
                     <strong>1.-</strong> Selecciona el algoritmo que deseas utilizar en el menú lateral. <br>
                     <strong>2.-</strong> Ingresa los datos necesarios para el algoritmo. <br>
                     <strong>3.-</strong> Da click en el botón "Generar". <br>
                     <strong>4.-</strong> Observa los resultados en la tabla. <br>
-                    <br>
-                    <br>
-                    <strong>Nota:</strong> <br>
-                    Página desarrollada por Edward Gómez para la materia de Modelado, Dinámica de Sistemas y Simulación.
                 </p>
                 <button class="modal-close" @click="closeModal">Cerrar</button>
             </div>
@@ -180,9 +175,16 @@ export default {
     width: 50px;
     height: 50px;
 }
+.sidebarIcon:hover{
+    scale: 1.1;
+}
 .aboutUsIcon{
     width: 50px;
     height: 50px;
+}
+.aboutUsIcon:hover{
+    scale: 1.1;
+    
 }
 
 .header-description {
@@ -282,6 +284,8 @@ export default {
     align-items: center;
     justify-content: center;
     z-index: 100;
+    overflow: hidden;
+    transition: 0.3s;
 }
 
 .modal-content {
@@ -346,7 +350,25 @@ export default {
         margin: 1rem 0.5rem ;
         font-size: 1rem;
     }
-    
+    .aboutUsIcon{
+        width: 30px;
+        height: 30px;
+    }
+    .modal-content {
+        padding: 1rem;
+        max-width: 300px;
+    }
+    .modal h2 {
+        font-size: 1rem;
+    }
+    .modal p {
+        font-size: 0.8rem;
+    }
+    .modal-close {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
 }
 
 /* Estilos para tabletas */
