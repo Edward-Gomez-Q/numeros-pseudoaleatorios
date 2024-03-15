@@ -56,9 +56,7 @@
             </div>
         </div>
     </div>
-    <div class="main--section">
-        <component :is="method" />
-    </div>
+    <component :is="method" />
     <div>
         <div class="modal" v-show="showModal">
             <div class="modal-content">

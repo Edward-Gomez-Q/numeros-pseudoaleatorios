@@ -8,32 +8,34 @@
                         <input v-model="semilla" type="number" min="0">
                     </div>
                     <div class="form--group">
-                        <label>Dígitos (D)</label>
-                        <input v-model="digitosLength" type="number" min="0" disabled>
-                    </div>
-                    
-                    <div class="form--group">
                         <label> Iteraciones </label>
-                        <input v-model="iteraciones">
-                    </div>
-                    
-                    <div class="form--group">
-                        <button @click="limpiar">Limpiar</button>
-                        <button  @click="generar">Generar</button>
+                        <input v-model="iteraciones" type="number" min="0">
                     </div>
             </div>
-            <div class="isDegenerate" v-if="degenerate">
+            <hr style="width: 100%; margin: 1rem 0; border: 1px solid var(--color-line)">
+            <div class="form--group--buttons">
+                <button  @click="generar">Generar</button>
+                
+                <button @click="limpiar">Limpiar</button>
+            </div>
+            <div class="count--decimals">
+                <label>Décimales (No necesario para el cálculo): </label>
+                <input v-model="decimales" type="number" min="0" max="10" step="1" @change="changeDecimals">
+            </div>
+        </div>
+    </div>
+    <div class="isDegenerate" v-if="degenerate">
                 <h2>El periodo es degenerado</h2>
                 <p>
                     {{ degenerateInfo }}
                 </p>
-            </div>
+    </div>
             <div class="main--section--content--table">
                 <table>
                     <thead>
                         <tr>
                             <th>Iteración (i)</th>
-                            <th>Y<sub>i</sub></th>
+                            <th>Y<sub>i</sub> = (X<sub>i</sub>)<sup>2</sup></th>
                             <th>X<sub>i</sub></th>
                             <th>r<sub>i</sub></th>
                         </tr>
@@ -48,8 +50,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
 </template>
 <script>
 export default {
@@ -62,6 +62,8 @@ export default {
             numeros: [],
             degenerateInfo: '',
             degenerate: false,
+            decimales: 0,
+            tableOriginal: []
         }
     },
     methods: {
@@ -70,27 +72,30 @@ export default {
             this.numeros = []
             this.table = []
             this.digitos = parseInt(this.semilla.toString().length)
+            this.decimales = this.digitos
             if(this.digitos > 2 && this.semilla > 0 && this.iteraciones > 0 && this.digitos === this.semilla.toString().length) {
                 let semilla = this.semilla
                 for(let i = 0; i < this.iteraciones; i++) {
                     let yi = Math.pow(semilla, 2)
+                    let yiText = "(" + semilla.toString() + ")^2 =" + yi.toString()
                     let Xi = this.hallarXi(yi)
-                    let ri = '0.' + Xi
+                    let ri = parseFloat(`0.${Xi}`)
                     if(this.numeros.includes(Xi) && this.degenerate === false) {
                         this.degenerate = true
                         this.degenerateInfo = `El periodo se degenera 
                         en la iteración ${i + 1} con el número ${ri}, este número ya se encuentra en la lista 
-                        de números pseudoaleatorios generados en la iteración ${this.numeros.indexOf(Xi) + 1} con el número ${ri}`
+                        de números pseudoaleatorios generados en la iteración ${this.numeros.indexOf(Xi) + 1} con el número ${ri}.`
                     }
                     this.numeros.push(Xi)
                     this.table.push({
                         iteracion: i + 1,
-                        yi: yi,
+                        yi: yiText,
                         xi: Xi,
-                        ri: ri
+                        ri: ri.toFixed(this.decimales)
                     })
                     semilla = Xi
                 }
+                this.tableOriginal = this.table
             } else {
                 alert('Datos incorrecto, considere: \nLos dígitos deben ser mayor a 2, la semilla debe ser mayor a 0, las iteraciones deben ser mayor a 0 y la semilla debe tener la misma cantidad de dígitos que la variable dígitos.')
             }
@@ -106,6 +111,12 @@ export default {
             this.semilla = 0
             this.iteraciones = 0
             this.table = []
+            this.numeros = []
+            this.degenerateInfo = ''
+            this.degenerate = false
+            this.decimales = 0
+            this.tableOriginal = []
+            
         }
     },
     computed: {
@@ -115,8 +126,18 @@ export default {
         isdegenerate(){
             return this.degenerate
         },
-        digitosLength() {
-            return this.semilla.toString().length
+        getDegenerateInfo(){
+            return this.degenerateInfo
+        },
+        changeDecimals(){
+            this.table = this.tableOriginal.map(item => {
+                return {
+                    iteracion: item.iteracion,
+                    yi: item.yi,
+                    xi: item.xi,
+                    ri: parseFloat(item.ri).toFixed(this.decimales)
+                }
+            })
         }
     },
 
@@ -129,15 +150,17 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
     height: 100%;
-    background-color: #ccfbf5;
+    background-color: #fff;
     border-radius: 0.5rem;
-    margin-top: 1rem;
+    border: 1px solid var(--color-line);
+    padding: 0.5rem;
+    margin: 1rem;
 }
 .main--section h1 {
     font-size: 2rem;
-    margin-bottom: 1rem;
+    margin: 0;
+    margin-bottom: 0.5rem;
 }
 .main--section--content {
     display: flex;
@@ -149,69 +172,105 @@ export default {
 }
 .main--section--content--form {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
     height: 100%;
-}
-.main--section--content--form form {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    width: 100%;
-    height: 100%;
-    margin-bottom: 1rem;
 }
 .main--section--content--form .form--group {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    
+    width: 50%;
+    padding: 0.5rem;
 }
 .main--section--content--form .form--group label {
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: start;
+}
+.main--section--content--form .form--group input {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
     font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+}
+.main--section--content--form .form--group input:hover {
+    border: 1px solid var(--color-hover);
+}
+.form--group--buttons{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.form--group--buttons button {
+    background-color: #f2f3f6;
+    border-radius: 0.5rem;
+    border: none;
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    font-size: 1rem;
+    color: var(--color-text);
+    transition: 0.3s;
+}
+.form--group--buttons button:hover {
+    background-color: #EEF2FD;
+    color: var(--color-hover);
+}
+ .count--decimals {
+    display: flex;
+    flex-direction: row;
+    margin: 0.5rem;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
 
 }
+ .count--decimals label {
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: start;
+    padding: 0.5rem;
+    
+}
+ .count--decimals input {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    font-size: 1rem;
+    color: var(--color-text);
+    transition: 0.3s;
+
+}
+
 .isDegenerate {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
     height: 100%;
     background-color: #ccfbf5;
+    color: #0E7677;
     border-radius: 0.5rem;
-    margin-top: 1rem;
+    margin: 1rem;
+    padding: 1rem;
 }
-.main--section--content--form .form--group input {
-    width: 50%;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #0E7677;
-    font-size: 1.5rem;
-}
-.main--section--content--form .form--group button {
-    width: 100%;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #0E7677;
-    font-size: 1.5rem;
-    background-color: #0E7677;
-    color: #ccfbf5;
-    cursor: pointer;
-    transition: 0.3s;
-    margin: 0.5rem;
-}
+
 .main--section--content--table {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50%;
     height: 100%;
+    background-color: #ccfbf5;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+    overflow: auto;
+    margin: 1rem;
 }
 .main--section--content--table table {
     width: 100%;
@@ -220,14 +279,29 @@ export default {
 .main--section--content--table table thead {
     background-color: #0E7677;
     color: #ccfbf5;
+    text-align: center;
 }
 .main--section--content--table table thead th {
     padding: 1rem;
 }
 .main--section--content--table table tbody tr {
     border-bottom: 1px solid #0E7677;
+    text-align: center;
 }
 .main--section--content--table table tbody tr td {
     padding: 1rem;
 }  
+/* Estilos para dispositivos pequeños (teléfonos) */
+@media only screen and (max-width: 600px) {
+  /* Estilos específicos para dispositivos pequeños */
+    .main--section--content--table table thead th {
+        padding: 0.5rem;
+    }
+    .main--section--content--table table tbody tr td {
+        padding: 0.5rem;
+    }
+
+
+    
+}
 </style>
