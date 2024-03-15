@@ -67,6 +67,8 @@
                     <strong>2.-</strong> Ingresa los datos necesarios para el algoritmo. <br>
                     <strong>3.-</strong> Da click en el botón "Generar". <br>
                     <strong>4.-</strong> Observa los resultados en la tabla. <br>
+                    <br>
+                    <strong>Nota:</strong> Página desarrollada por: Edward Osvaldo Gomez Quispe
                 </p>
                 <button class="modal-close" @click="closeModal">Cerrar</button>
             </div>
