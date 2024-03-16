@@ -88,6 +88,7 @@ methods: {
         let a = 0
         this.decimales = 10
         let xiText = ''
+        let xiAux = 0
         if(this.modeSelect == 0){
             a = 3 + 8 * this.k
         }else if(this.modeSelect == 1){
@@ -102,8 +103,9 @@ methods: {
             return
         }
         while (iteracion < this.periodo + 2) {
+            xiAux = xi
             xi = (a * xi) % this.getModulo
-            xiText = "(" + a + "*" + xi + ") mod (" + this.getModulo + ")" + " = " + xi
+            xiText = "(" + a + "*" + xiAux + ") mod (" + this.getModulo + ")" + " = " + xi
             ri = xi / (this.getModulo-1)
             this.table.push({
                 iteracion: iteracion + 1,
